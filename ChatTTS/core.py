@@ -122,6 +122,8 @@ class Chat:
             assert gpt_ckpt_path, 'gpt_ckpt_path should not be None'
             gpt.load_state_dict(torch.load(gpt_ckpt_path))
             if compile and 'cuda' in str(device):
+                # 接收任意数量的参数（位置参数和关键字参数），但总是返回第一个位置参数。这里，用来覆盖 torch.compile 函数。
+                torch.compile = lambda *args, **kwargs: args[0]
                 gpt.gpt.forward = torch.compile(gpt.gpt.forward,  backend='inductor', dynamic=True)
             self.pretrain_models['gpt'] = gpt
             spk_stat_path = os.path.join(os.path.dirname(gpt_ckpt_path), 'spk_stat.pt')
@@ -158,7 +160,8 @@ class Chat:
         stream=False,
         do_homophone_replacement=True
     ):
-        
+        # print(text)
+
         assert self.check_model(use_decoder=use_decoder)
         
         if not isinstance(text, list): 

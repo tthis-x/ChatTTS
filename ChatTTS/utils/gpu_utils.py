@@ -4,6 +4,8 @@ import logging
 
 def select_device(min_memory=2048):
     logger = logging.getLogger(__name__)
+    print('print(torch.version.cuda): ', torch.version.cuda)
+    print('print(torch.cuda.is_available()): ', torch.cuda.is_available())
     if torch.cuda.is_available():
         available_gpus = []
         for i in range(torch.cuda.device_count()):
